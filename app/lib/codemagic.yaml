@@ -1,0 +1,27 @@
+workflows:
+  cenmaya_android:
+    name: Cenmaya Android
+    max_build_duration: 60
+    environment:
+      flutter: stable
+      vars:
+        APP_ID: "com.cenmaya.app"
+        APP_NAME: "Cenmaya"
+    scripts:
+      - name: Show Flutter version
+        script: flutter --version
+      - name: Create Flutter project skeleton
+        script: |
+          if [ ! -f "pubspec.yaml" ]; then
+            flutter create --org ${APP_ID} --project-name cenmaya .
+          fi
+      - name: Move our custom main.dart into place
+        script: |
+          mkdir -p lib
+          cp app/lib/main.dart lib/main.dart
+      - name: Flutter pub get
+        script: flutter pub get
+      - name: Build Android APK (release)
+        script: flutter build apk --release
+    artifacts:
+      - build/app/outputs/flutter-apk/app-release.apk
